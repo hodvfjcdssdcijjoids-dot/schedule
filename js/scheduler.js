@@ -49,27 +49,8 @@
     return paidMinutesFor(a.start, a.end, settings) / 60;
   }
 
-  function normalizedTimeOffRange(t) {
-    if (!t || !t.start) return null;
-    const start = t.start;
-    const end = t.end || t.start;
-    return start <= end ? { start, end } : { start: end, end: start };
-  }
-
-  function isOnTimeOff(emp, dateKey, endDateKey) {
-    const endKey = endDateKey || dateKey;
-    return (emp.timeOff || []).some(t => {
-      const r = normalizedTimeOffRange(t);
-      return r && dateKey <= r.end && endKey >= r.start;
-    });
-  }
-
-  function slotEndDateKey(slot) {
-    return slot.overnight ? U.dateToKey(U.addDays(U.keyToDate(slot.dateKey), 1)) : slot.dateKey;
-  }
-
-  function assignmentEndDateKey(dateKey, a) {
-    return U.parseTime(a.end) <= U.parseTime(a.start) ? U.dateToKey(U.addDays(U.keyToDate(dateKey), 1)) : dateKey;
+  function isOnTimeOff(emp, dateKey) {
+    return (emp.timeOff || []).some(t => t.start <= dateKey && dateKey <= t.end);
   }
 
   /** The employee's availability window for that date, or null if unavailable. */
@@ -134,7 +115,7 @@
     if (slot.role && emp.role !== slot.role && !(emp.skills || []).includes(slot.role)) {
       return { code: 'role', msg: 'requires ' + slot.role + ' role or skill' };
     }
-    if (isOnTimeOff(emp, slot.dateKey, slotEndDateKey(slot))) {
+    if (isOnTimeOff(emp, slot.dateKey)) {
       return { code: 'timeoff', msg: 'on time off' };
     }
     const av = availabilityFor(emp, slot.dateKey);
@@ -353,7 +334,7 @@
             message: 'A shift on ' + when + ' is assigned to a deleted employee.' });
           continue;
         }
-        if (isOnTimeOff(emp, dk, assignmentEndDateKey(dk, a))) {
+        if (isOnTimeOff(emp, dk)) {
           issues.push({ severity: 'error', type: 'timeoff', dateKey: dk, employeeId: emp.id,
             message: emp.name + ' is scheduled on ' + when + ' but has time off.' });
         }
@@ -472,7 +453,6 @@
     durationMinutes,
     paidMinutesFor,
     assignmentHours,
-    normalizedTimeOffRange,
     isOnTimeOff,
     availabilityFor,
     weekHours,

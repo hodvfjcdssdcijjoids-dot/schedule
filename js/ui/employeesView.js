@@ -118,14 +118,13 @@
       }).join('') + '</div>' +
 
       '<h4 class="section-h">Time off</h4>' +
-      '<p class="hint">Time off blocks auto-scheduling for every date in the saved range, including overnight shifts that cross into a time-off day.</p>' +
       '<div id="timeoff-list"></div>' +
       '<div class="timeoff-add">' +
         '<input type="date" name="to-start" title="First day off">' +
         '<span class="avail-dash">to</span>' +
         '<input type="date" name="to-end" title="Last day off">' +
         '<input type="text" name="to-note" placeholder="Note (optional)">' +
-        '<button type="button" class="btn btn-sm" data-add-timeoff>Add</button>' +
+        '<button class="btn btn-sm" data-add-timeoff>Add</button>' +
       '</div>';
 
     ui.openModal({
@@ -162,7 +161,6 @@
           if (!start) { ui.toast('Pick a start date for the time off.', 'error'); return; }
           if (end < start) { ui.toast('Time off cannot end before it starts.', 'error'); return; }
           timeOff.push({ id: U.uid('to'), start, end, note });
-          ui.toast('Time off added — save the employee to apply it.', 'success');
           modal.querySelector('[name=to-start]').value = '';
           modal.querySelector('[name=to-end]').value = '';
           modal.querySelector('[name=to-note]').value = '';

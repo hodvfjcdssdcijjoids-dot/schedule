@@ -49,9 +49,6 @@
       session.weekStart = U.startOfWeek(session.weekStart, state.settings.weekStartsOn);
     }
 
-    const themes = ['light', 'dark', 'midnight', 'forest', 'sunset', 'ocean', 'high-contrast'];
-    document.documentElement.dataset.theme = themes.includes(state.settings.theme) ? state.settings.theme : 'light';
-
     const header = document.getElementById('app-header');
     header.innerHTML =
       '<div class="brand"><span class="brand-logo">&#128197;</span>' +

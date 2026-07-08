@@ -13,7 +13,6 @@
     maxConsecutiveDays: 6,
     optimizeCost: false,      // default for the auto-scheduler's cost bias
     currency: '$',
-    theme: 'light',
     weeklyLaborBudget: 0,     // 0 disables budget warnings
     defaultBreakMinutes: 30,
     breakAfterHours: 6
@@ -50,16 +49,8 @@
     return av;
   }
 
-  function normalizeTimeOff(list) {
-    return (Array.isArray(list) ? list : []).filter(t => t && t.start).map(t => {
-      const start = t.start <= (t.end || t.start) ? t.start : (t.end || t.start);
-      const end = t.start <= (t.end || t.start) ? (t.end || t.start) : t.start;
-      return Object.assign({}, t, { id: t.id || U.uid('to'), start, end });
-    });
-  }
-
   function normalizeEmployee(e, i) {
-    const emp = Object.assign({
+    return Object.assign({
       id: U.uid('e'), name: 'Unnamed', role: 'Associate', wage: 0,
       minHours: 0, maxHours: 40, maxDaysPerWeek: 5,
       color: PALETTE[i % PALETTE.length],
@@ -69,8 +60,6 @@
       skills: [],
       timeOff: []
     }, e);
-    emp.timeOff = normalizeTimeOff(emp.timeOff);
-    return emp;
   }
 
   function normalizeState(s) {

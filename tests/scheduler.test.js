@@ -222,23 +222,3 @@ test('validateWeek passes a clean, fully-covered week', () => {
   const issues = S.validateWeek(state, WEEK).filter(i => i.severity === 'error');
   assert.deepStrictEqual(issues, []);
 });
-
-
-test('overnight shifts are blocked when they cross into time off', () => {
-  const a = emp({
-    availability: Array.from({ length: 7 }, () => ({ on: true, start: '00:00', end: '24:00' })),
-    timeOff: [{ start: '2026-07-07', end: '2026-07-07' }]
-  });
-  const state = mkState([a], [{ name: 'Overnight', start: '22:00', end: '06:00', days: [1], required: 1 }]);
-  const res = S.autoSchedule(state, WEEK, { mode: 'fill' });
-  assert.equal(res.created.length, 0);
-  assert.equal(res.unfilled[0].reasons.timeoff, 1);
-});
-
-test('validateWeek flags overnight shifts crossing into time off', () => {
-  const a = emp({ timeOff: [{ start: '2026-07-07', end: '2026-07-07' }] });
-  const state = mkState([a], [{ id: 'overnight', name: 'Overnight', start: '22:00', end: '06:00', days: [1], required: 1 }]);
-  state.schedule['2026-07-06'] = [{ id: 'a1', dateKey: '2026-07-06', employeeId: a.id, templateId: 'overnight', start: '22:00', end: '06:00' }];
-  const issues = S.validateWeek(state, WEEK);
-  assert.ok(issues.some(i => i.type === 'timeoff'), 'overnight crossing into time off should be flagged');
-});
