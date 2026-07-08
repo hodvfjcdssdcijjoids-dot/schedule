@@ -23,8 +23,11 @@
         '</select></label>' +
         '<label class="stack">Currency symbol<input type="text" maxlength="3" data-action="set-currency" value="' + U.escapeHtml(S.currency) + '"></label>' +
         '<label class="stack">Theme<select data-action="set-theme">' +
-          '<option value="light"' + ((S.theme || 'light') === 'light' ? ' selected' : '') + '>Light</option>' +
-          '<option value="dark"' + (S.theme === 'dark' ? ' selected' : '') + '>Dark</option>' +
+          [
+            ['light', 'Light'], ['dark', 'Dark'], ['midnight', 'Midnight'],
+            ['forest', 'Forest'], ['sunset', 'Sunset'], ['ocean', 'Ocean'],
+            ['high-contrast', 'High contrast']
+          ].map(([value, label]) => '<option value="' + value + '"' + ((S.theme || 'light') === value ? ' selected' : '') + '>' + label + '</option>').join('') +
         '</select></label>' +
       '</div>' +
 
@@ -76,7 +79,7 @@
       'set-store-name': (d, el) => store.updateSettings({ storeName: el.value.trim() || 'My Store' }),
       'set-week-start': (d, el) => store.updateSettings({ weekStartsOn: +el.value }),
       'set-currency': (d, el) => store.updateSettings({ currency: el.value || '$' }),
-      'set-theme': (d, el) => store.updateSettings({ theme: el.value === 'dark' ? 'dark' : 'light' }),
+      'set-theme': (d, el) => store.updateSettings({ theme: el.value }),
       'set-ot': (d, el) => store.updateSettings({ overtimeThreshold: num(el.value, 40) }),
       'set-rest': (d, el) => store.updateSettings({ minRestHours: num(el.value, 10) }),
       'set-consec': (d, el) => store.updateSettings({ maxConsecutiveDays: num(el.value, 6) }),

@@ -49,7 +49,8 @@
       session.weekStart = U.startOfWeek(session.weekStart, state.settings.weekStartsOn);
     }
 
-    document.documentElement.dataset.theme = state.settings.theme === 'dark' ? 'dark' : 'light';
+    const themes = ['light', 'dark', 'midnight', 'forest', 'sunset', 'ocean', 'high-contrast'];
+    document.documentElement.dataset.theme = themes.includes(state.settings.theme) ? state.settings.theme : 'light';
 
     const header = document.getElementById('app-header');
     header.innerHTML =
